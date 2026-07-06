@@ -19,7 +19,7 @@ export function CreateUserForm() {
 
   useEffect(() => {
     toast.dismiss();
-    if (state.errors.length > 0) {
+    if (state?.errors?.length > 0) {
       state.errors.forEach(error => toast.error(error));
     }
   }, [state]);
@@ -31,7 +31,7 @@ export function CreateUserForm() {
         'text-center max-w-sm mt-16 mb-32 mx-auto',
       )}
     >
-      <form action={''} className='flex-1 flex flex-col gap-6'>
+      <form action={action} className='flex-1 flex flex-col gap-6'>
         <InputText
           type='text'
           name='name'
