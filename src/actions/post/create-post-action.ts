@@ -1,15 +1,15 @@
-"use server";
+'use server';
 
-import { makePartialPublicPost, PublicPost } from "@/dto/post/dto";
-import { verifyLoginSession } from "@/lib/login/manage-login";
-import { PostCreateSchema } from "@/lib/post/validations";
-import { PostModel } from "@/models/post/post-model";
-import { postRepository } from "@/repositories/post";
-import { getZodErrorMessages } from "@/utils/get-zod-error-message";
-import { makeSlugFromText } from "@/utils/make-slug-from-text";
-import { revalidateTag } from "next/cache";
-import { redirect } from "next/navigation";
-import { v4 as uuidv4 } from "uuid";
+import { makePartialPublicPost, PublicPost } from '@/dto/post/dto';
+import { verifyLoginSession } from '@/lib/login/manage-login';
+import { PostCreateSchema } from '@/lib/post/schemas';
+import { PostModel } from '@/models/post/post-model';
+import { postRepository } from '@/repositories/post';
+import { getZodErrorMessages } from '@/utils/get-zod-error-message';
+import { makeSlugFromText } from '@/utils/make-slug-from-text';
+import { revalidateTag } from 'next/cache';
+import { redirect } from 'next/navigation';
+import { v4 as uuidv4 } from 'uuid';
 
 type CreatePostState = {
   formState: PublicPost;
@@ -24,7 +24,7 @@ export async function createPostAction(
   if (!(formData instanceof FormData)) {
     return {
       formState: prevState.formState,
-      errors: ["Dados Inválidos"],
+      errors: ['Dados Inválidos'],
     };
   }
 
@@ -34,7 +34,7 @@ export async function createPostAction(
   const isAuthenticated = await verifyLoginSession();
   if (!isAuthenticated) {
     return {
-      errors: ["Faça login em outra aba antes de salvar"],
+      errors: ['Faça login em outra aba antes de salvar'],
       formState: makePartialPublicPost(prevState.formState),
     };
   }
@@ -68,11 +68,11 @@ export async function createPostAction(
 
     return {
       formState: newPost,
-      errors: ["Erro desconhecido"],
+      errors: ['Erro desconhecido'],
     };
   }
 
-  revalidateTag("posts", "max");
+  revalidateTag('posts', 'max');
 
   redirect(`/admin/post/${newPost.id}?created=1`);
 }
