@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useActionState, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import { HoneypotInput } from '../HoneypotInput';
 
 export function LoginPage() {
   const initialState = {
@@ -70,6 +71,9 @@ export function LoginPage() {
           disabled={isPending}
           required
         />
+
+        <HoneypotInput />
+
         <Button disabled={isPending} className='mt-4' type='submit'>
           <LogInIcon /> Entrar
         </Button>
