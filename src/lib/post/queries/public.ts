@@ -1,25 +1,24 @@
-import { postRepository } from "@/repositories/post";
-import { unstable_cache } from "next/cache";
-import { notFound } from "next/navigation";
-import { cache } from "react";
+import { PostModel } from '@/models/post/post-model';
+import { apiRequest } from '@/utils/api-request';
+import { cache } from 'react';
 
-export const findAllPublicPostCached = cache(
-  unstable_cache(async () => await postRepository.findAllPublic(), ["posts"], {
-    tags: ["posts"],
-  }),
-);
-export const findPublicPostBySlugCached = cache((slug: string) => {
-  return unstable_cache(
-    async (slug: string) => {
-      const post = await postRepository
-        .findBySlugPublic(slug)
-        .catch(() => undefined);
-
-      if (!post?.published || !post) return undefined;
-
-      return post;
+export const findAllPublicPostCached = cache(async () => {
+  const postsResponse = await apiRequest<PostModel[]>(`/post`, {
+    next: {
+      tags: ['posts'],
+      revalidate: 86400,
     },
-    [`post-${slug}`],
-    { tags: [`post-${slug}`] },
-  )(slug);
+  });
+
+  return postsResponse;
+});
+export const findPublicPostBySlugCached = cache(async (slug: string) => {
+  const postsResponse = await apiRequest<PostModel>(`/post/${slug}`, {
+    next: {
+      tags: [`post-${slug}`],
+      revalidate: 86400,
+    },
+  });
+
+  return postsResponse;
 });
