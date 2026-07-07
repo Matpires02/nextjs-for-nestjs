@@ -1,6 +1,6 @@
-"use client";
-import { logoutAction } from "@/actions/login/logout-action";
-import clsx from "clsx";
+'use client';
+import { logoutAction } from '@/actions/login/logout-action';
+import clsx from 'clsx';
 import {
   CircleXIcon,
   FileTextIcon,
@@ -9,10 +9,11 @@ import {
   LogOutIcon,
   MenuIcon,
   PlusIcon,
-} from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+  UserPenIcon,
+} from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useEffect, useState, useTransition } from 'react';
 
 export function MenuAdmin() {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,20 +27,20 @@ export function MenuAdmin() {
   const [isPending, startTransition] = useTransition();
 
   const navClasses = clsx(
-    "bg-slate-900 text-slate-100 rounded-lg dark:bg-slate-100 dark:text-slate-900",
-    "flex flex-col mb-8",
-    "sm:flex-row sm:flex-wrap",
-    !isOpen && "h-10 overflow-hidden",
-    "sm:overflow-visible sm:h-auto",
+    'bg-slate-900 text-slate-100 rounded-lg dark:bg-slate-100 dark:text-slate-900',
+    'flex flex-col mb-8',
+    'sm:flex-row sm:flex-wrap',
+    !isOpen && 'h-10 overflow-hidden',
+    'sm:overflow-visible sm:h-auto',
   );
   const linkClasses = clsx(
-    "[&>svg]:w-4 [&>svg]:h-4 px-4 flex items-center gap-2 rounded-lg cursor-pointer",
-    "transition hover:bg-slate-800 dark:hover:bg-slate-300",
-    "h-10 shrink-0",
+    '[&>svg]:w-4 [&>svg]:h-4 px-4 flex items-center gap-2 rounded-lg cursor-pointer',
+    'transition hover:bg-slate-800 dark:hover:bg-slate-300',
+    'h-10 shrink-0',
   );
   const openCloseBtnClasses = clsx(
     linkClasses,
-    "text-blue-200 italic dark:text-blue-950 sm:hidden",
+    'text-blue-200 italic dark:text-blue-950 sm:hidden',
   );
   function handleLogout(
     event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
@@ -54,10 +55,10 @@ export function MenuAdmin() {
   return (
     <nav className={navClasses}>
       <button
-        onClick={() => setIsOpen((s) => !s)}
+        onClick={() => setIsOpen(s => !s)}
         className={openCloseBtnClasses}
-        type="button"
-        aria-label={`${isOpen ? "Fechar" : "Abrir"} Menu`}
+        type='button'
+        aria-label={`${isOpen ? 'Fechar' : 'Abrir'} Menu`}
       >
         {!isOpen && (
           <>
@@ -73,22 +74,27 @@ export function MenuAdmin() {
         )}
       </button>
 
-      <a className={linkClasses} href="/" target="_blank">
+      <a className={linkClasses} href='/' target='_blank'>
         <HouseIcon />
         Home
       </a>
 
-      <Link className={linkClasses} href="/admin/post">
+      <Link className={linkClasses} href='/admin/post'>
         <FileTextIcon />
         Posts
       </Link>
 
-      <Link className={linkClasses} href="/admin/post/new">
+      <Link className={linkClasses} href='/admin/post/new'>
         <PlusIcon />
         Criar Post
       </Link>
 
-      <a onClick={handleLogout} href="#" className={linkClasses}>
+      <Link className={linkClasses} href='/admin/user'>
+        <UserPenIcon />
+        Seus Dados
+      </Link>
+
+      <a onClick={handleLogout} href='#' className={linkClasses}>
         {isPending && (
           <>
             <HourglassIcon />
