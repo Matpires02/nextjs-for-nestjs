@@ -1,5 +1,4 @@
 import { PostModel } from '@/models/post/post-model';
-import { postRepository } from '@/repositories/post';
 import { authenticatedApiRequest } from '@/utils/authenticated-api-request';
 import { cache } from 'react';
 
