@@ -1,23 +1,30 @@
-import { postRepository } from "@/repositories/post";
-import { PostCoverImage } from "../PostCoverImage";
-import { PostSummary } from "../PostSumary";
-import { findAllPublicPostCached } from "@/lib/post/queries/public";
-import ErrorMessage from "../ErrorMessage";
+import { PostCoverImage } from '../PostCoverImage';
+import { PostSummary } from '../PostSumary';
+import { findAllPublicPostCached } from '@/lib/post/queries/public';
+import ErrorMessage from '../ErrorMessage';
 
 export async function PostFeatured() {
-  const posts = await findAllPublicPostCached();
+  const postsRes = await findAllPublicPostCached();
+  const noPostsFound = (
+    <ErrorMessage
+      contentTitle='Ops 😅'
+      content='Ainda não criamos nenhum post.'
+    />
+  );
 
-  if (posts.length <= 0)
-    return (
-      <ErrorMessage
-        contentTitle="Ops!"
-        content="Ainda não criamos nenhum post"
-      />
-    );
+  if (!postsRes.success) {
+    return noPostsFound;
+  }
+  const posts = postsRes.data;
+
+  if (posts.length <= 0) {
+    return noPostsFound;
+  }
+
   const post = posts[0];
   const postLink = `/post/${post.slug}`;
   return (
-    <section className="grid grid-cols-1 gap-8 mb-16 sm:grid-cols-2 group">
+    <section className='grid grid-cols-1 gap-8 mb-16 sm:grid-cols-2 group'>
       <PostCoverImage
         linkProps={{
           href: postLink,
@@ -25,15 +32,15 @@ export async function PostFeatured() {
         imageProps={{
           width: 1200,
           height: 720,
-          src: post.coverImageUrl.replace("http://localhost:3000", ""),
-          alt: "Alt da imagem",
+          src: post.coverImageUrl,
+          alt: 'Alt da imagem',
           priority: true,
         }}
       />
       <PostSummary
         createdAt={post.createdAt}
         excerpt={post.excerpt}
-        postHeading="h1"
+        postHeading='h1'
         postLink={postLink}
         title={post.title}
       />
