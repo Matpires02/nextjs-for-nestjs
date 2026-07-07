@@ -4,8 +4,7 @@ import { Button } from '@/components/Button';
 import { InputText } from '@/components/InputText';
 import { LogInIcon } from 'lucide-react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { useRouter } from 'next/router';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useActionState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 
