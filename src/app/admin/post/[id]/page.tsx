@@ -1,17 +1,17 @@
-import ManagePostForm from "@/components/Admin/ManagePostForm";
-import { makePublicPostFormDb } from "@/dto/post/dto";
-import { findPostByIdAdmin } from "@/lib/post/queries/admin";
-import { Metadata } from "next";
-import { notFound } from "next/navigation";
+import ManagePostForm from '@/components/Admin/ManagePostForm';
+import { findPostByIdAdmin } from '@/lib/post/queries/admin';
+import { PublicPostForApiSchema } from '@/lib/post/schemas';
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 type AdminPostIdPageProps = {
   params: Promise<{ id: string }>;
 };
 
 export const metadata: Metadata = {
-  title: "Editar post",
+  title: 'Editar post',
 };
 
 export default async function AdminPostIdPage({
@@ -20,18 +20,21 @@ export default async function AdminPostIdPage({
   const allowUploadImage = Boolean(Number(process.env.ALLOW_UPLOAD_IMAGE));
 
   const { id } = await params;
-  const post = await findPostByIdAdmin(id);
+  const postResponse = await findPostByIdAdmin(id);
 
-  if (!post) notFound();
+  if (!postResponse.success) {
+    console.error(postResponse.errors);
+    notFound();
+  }
 
-  const publicPost = makePublicPostFormDb(post);
+  const publicPost = PublicPostForApiSchema.parse(postResponse.data);
 
   return (
-    <div className="flex flex-col gap-6">
-      <h1 className="text-xl font-extrabold">Editar post</h1>
+    <div className='flex flex-col gap-6'>
+      <h1 className='text-xl font-extrabold'>Editar post</h1>
       <ManagePostForm
         allowUploadImage={allowUploadImage}
-        mode="update"
+        mode='update'
         publicPost={publicPost}
       />
     </div>

@@ -1,15 +1,15 @@
 'use server';
 
-import { makePartialPublicPost, PublicPost } from '@/dto/post/dto';
+import { PublicPost } from '@/dto/post/dto';
 import { verifyLoginSession } from '@/lib/login/manage-login';
-import { PostCreateSchema } from '@/lib/post/schemas';
-import { PostModel } from '@/models/post/post-model';
-import { postRepository } from '@/repositories/post';
+import {
+  CreatePostForApiSchema,
+  PublicPostForApiSchema,
+} from '@/lib/post/schemas';
+import { authenticatedApiRequest } from '@/utils/authenticated-api-request';
 import { getZodErrorMessages } from '@/utils/get-zod-error-message';
-import { makeSlugFromText } from '@/utils/make-slug-from-text';
 import { revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { v4 as uuidv4 } from 'uuid';
 
 type CreatePostState = {
   formState: PublicPost;
@@ -29,13 +29,13 @@ export async function createPostAction(
   }
 
   const formdataObj = Object.fromEntries(formData.entries());
-  const zodParsedObj = PostCreateSchema.safeParse(formdataObj);
+  const zodParsedObj = CreatePostForApiSchema.safeParse(formdataObj);
 
   const isAuthenticated = await verifyLoginSession();
   if (!isAuthenticated) {
     return {
       errors: ['Faça login em outra aba antes de salvar'],
-      formState: makePartialPublicPost(prevState.formState),
+      formState: PublicPostForApiSchema.parse(prevState.formState),
     };
   }
 
@@ -43,36 +43,33 @@ export async function createPostAction(
     const errors = getZodErrorMessages(zodParsedObj.error.format());
     return {
       errors,
-      formState: makePartialPublicPost(prevState.formState),
+      formState: PublicPostForApiSchema.parse(prevState.formState),
     };
   }
 
-  const validPostData = zodParsedObj.data;
-  const newPost: PostModel = {
-    ...validPostData,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    id: uuidv4(),
-    slug: makeSlugFromText(validPostData.title),
-  };
+  const newPost = zodParsedObj.data;
 
-  try {
-    await postRepository.create(newPost);
-  } catch (e: unknown) {
-    if (e instanceof Error) {
-      return {
-        formState: newPost,
-        errors: [e.message],
-      };
-    }
+  const createPostResponse = await authenticatedApiRequest<PublicPost>(
+    `/post/me`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newPost),
+    },
+  );
 
+  if (!createPostResponse.success) {
     return {
-      formState: newPost,
-      errors: ['Erro desconhecido'],
+      formState: PublicPostForApiSchema.parse(formdataObj),
+      errors: createPostResponse.errors,
     };
   }
+
+  const createdPost = createPostResponse.data;
 
   revalidateTag('posts', 'max');
 
-  redirect(`/admin/post/${newPost.id}?created=1`);
+  redirect(`/admin/post/${createdPost.id}?created=1`);
 }
