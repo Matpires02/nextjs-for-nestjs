@@ -30,6 +30,16 @@ export async function createUserAction(
     };
   }
 
+  const allowLogin = Boolean(Number(process.env.ALLOW_LOGIN));
+
+  if (!allowLogin) {
+    return {
+      user: state.user,
+      errors: ['Create login not allowed'],
+      success: false,
+    };
+  }
+
   if (!(formData instanceof FormData)) {
     return {
       user: state.user,
