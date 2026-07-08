@@ -75,8 +75,6 @@ export default function ManagePostForm(props: ManagePostFormProps) {
     }
   }, [created, router]);
 
-  const { formState } = state;
-
   const [contentValue, setContentValue] = useState(publicPost?.content || '');
   return (
     <form action={action} className='mb-16'>
@@ -86,7 +84,7 @@ export default function ManagePostForm(props: ManagePostFormProps) {
           name='id'
           type='text'
           placeholder='O id é gerado automaticamente pelo sistema'
-          defaultValue={formState.id}
+          defaultValue={state.formState.id}
           disabled={isPending}
           readOnly
         />
@@ -95,7 +93,7 @@ export default function ManagePostForm(props: ManagePostFormProps) {
           name='slug'
           type='text'
           placeholder='A slug é gerada automaticamente pelo sistema'
-          defaultValue={formState.slug}
+          defaultValue={state.formState.slug}
           disabled={isPending}
           readOnly
         />
@@ -104,7 +102,7 @@ export default function ManagePostForm(props: ManagePostFormProps) {
           name='title'
           placeholder='Digite o título'
           type='text'
-          defaultValue={formState.title}
+          defaultValue={state.formState.title}
           disabled={isPending}
         />
         <InputText
@@ -112,7 +110,7 @@ export default function ManagePostForm(props: ManagePostFormProps) {
           name='excerpt'
           placeholder='Digite o resumo'
           type='text'
-          defaultValue={formState.excerpt}
+          defaultValue={state.formState.excerpt}
           disabled={isPending}
         />
         <MarkdownEditor
@@ -152,7 +150,7 @@ export default function ManagePostForm(props: ManagePostFormProps) {
           name='coverImageUrl'
           placeholder='Digite a url da imagem'
           type='text'
-          defaultValue={formState.coverImageUrl}
+          defaultValue={state.formState.coverImageUrl}
           disabled={isPending}
         />
 
@@ -162,7 +160,7 @@ export default function ManagePostForm(props: ManagePostFormProps) {
             name='published'
             placeholder='Digite a url da imagem'
             type='checkbox'
-            defaultChecked={formState.published}
+            defaultChecked={state.formState.published}
             disabled={isPending}
           />
         )}
