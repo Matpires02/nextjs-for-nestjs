@@ -7,7 +7,7 @@ import ImageUploader from '@/components/ImageUploader';
 import { InputCheckbox } from '@/components/InputCheckbox';
 import { InputText } from '@/components/InputText';
 import MarkdownEditor from '@/components/MarkdownEditor';
-import { makePartialPublicPost, PublicPost } from '@/dto/post/dto';
+import { PublicPost } from '@/dto/post/dto';
 import { PublicPostForApiSchema } from '@/lib/post/schemas';
 import { AlertTriangleIcon } from 'lucide-react';
 import Link from 'next/link';
